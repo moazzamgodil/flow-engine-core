@@ -1,0 +1,61 @@
+{
+  "name": "flow-engine-core",
+  "version": "0.1.0",
+  "description": "Lightweight, secure, event-driven workflow engine for Node.js and browsers",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "browser": {
+    "./dist/index.js": "./dist/index.browser.js",
+    "./dist/index.cjs": "./dist/index.browser.js"
+  },
+  "unpkg": "./dist/index.global.js",
+  "jsdelivr": "./dist/index.global.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "clean": "node -e \"try{require('node:fs').rmSync('dist',{recursive:true,force:true})}catch{}\"",
+    "test": "node tests/workflow.test.mjs",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "bench": "npm run build && node tests/benchmark.mjs",
+    "ci": "npm run lint && npm run typecheck && npm run build && npm run test"
+  },
+  "keywords": [
+    "workflow",
+    "engine",
+    "typescript",
+    "node",
+    "event-driven",
+    "browser",
+    "cdn"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.6.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.8.3"
+  }
+}
