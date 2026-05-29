@@ -191,6 +191,9 @@ await runPromise;
 Built-in adapter:
 
 - `InMemoryStorageAdapter`
+- `RedisStorageAdapter`
+- `PostgresStorageAdapter`
+- `MongoStorageAdapter`
 
 Adapter contract:
 
@@ -201,6 +204,64 @@ interface StorageAdapter<TContext> {
   updateWorkflow(record: WorkflowRecord<TContext>): Promise<void>;
   markDone(executionId: string): Promise<void>;
 }
+```
+
+Adapter usage examples:
+
+Install the client package for the adapter you choose:
+
+```bash
+npm install redis
+# or
+npm install pg
+# or
+npm install mongodb
+```
+
+Redis:
+
+```ts
+import { createClient } from 'redis';
+import { RedisStorageAdapter, createRuntime } from 'flow-engine-core';
+
+const redis = createClient({ url: process.env.REDIS_URL });
+await redis.connect();
+
+const runtime = createRuntime<{ ok: boolean }>({
+  storage: new RedisStorageAdapter(redis, { keyPrefix: 'flow-engine:workflow:' }),
+});
+```
+
+Postgres:
+
+```ts
+import { Client } from 'pg';
+import { PostgresStorageAdapter, createRuntime } from 'flow-engine-core';
+
+const pg = new Client({ connectionString: process.env.DATABASE_URL });
+await pg.connect();
+
+const runtime = createRuntime<{ ok: boolean }>({
+  storage: new PostgresStorageAdapter(pg, {
+    schemaName: 'public',
+    tableName: 'flow_workflows',
+  }),
+});
+```
+
+MongoDB:
+
+```ts
+import { MongoClient } from 'mongodb';
+import { MongoStorageAdapter, createRuntime } from 'flow-engine-core';
+
+const mongo = new MongoClient(process.env.MONGODB_URI!);
+await mongo.connect();
+
+const db = mongo.db('workflow_db');
+const runtime = createRuntime<{ ok: boolean }>({
+  storage: new MongoStorageAdapter(db, { collectionName: 'flow_workflows' }),
+});
 ```
 
 ## Events
@@ -240,6 +301,22 @@ const offAll = onFlowEvent('*', 'workflowFailed', (payload) => {
 offCompleted();
 offHooks();
 offAll();
+```
+
+## Optional Metrics Helper
+
+Use `WorkflowMetricsHelper` to collect counters and duration stats from runtime events.
+
+```ts
+import { createRuntime, createWorkflowMetricsHelper } from 'flow-engine-core';
+
+const runtime = createRuntime<{ ok: boolean }>();
+const metrics = createWorkflowMetricsHelper(runtime);
+
+await runtime.workflow('demo').step('a', () => {}).run({ ok: true });
+
+console.log(metrics.snapshot());
+metrics.detach();
 ```
 
 ## Errors
