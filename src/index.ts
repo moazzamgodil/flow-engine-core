@@ -46,6 +46,10 @@ export { onFlowEvent, onFlowHooks };
 export type { FlowHooks, FlowLifecycleEvent };
 
 export { InMemoryStorageAdapter } from './persistence/in-memory-adapter.js';
+export { RedisStorageAdapter } from './persistence/redis-adapter.js';
+export { PostgresStorageAdapter } from './persistence/postgres-adapter.js';
+export { MongoStorageAdapter } from './persistence/mongo-adapter.js';
+export { WorkflowMetricsHelper, createWorkflowMetricsHelper } from './metrics/workflow-metrics.js';
 export { parseDelay } from './delay/parse-delay.js';
 export { FlowEngine } from './core/engine.js';
 export { WorkflowBuilder } from './workflow/workflow-builder.js';
@@ -63,6 +67,23 @@ export type {
   WorkflowRunOptions,
   WorkflowStatus,
 } from './types/index.js';
+export type {
+  MongoCollectionLike,
+  MongoDbLike,
+  MongoStorageAdapterOptions,
+} from './persistence/mongo-adapter.js';
+export type {
+  PostgresLikeClient,
+  PostgresQueryResult,
+  PostgresStorageAdapterOptions,
+} from './persistence/postgres-adapter.js';
+export type { RedisLikeClient, RedisStorageAdapterOptions } from './persistence/redis-adapter.js';
+export type {
+  DurationStats,
+  MetricsCounters,
+  WorkflowEventSource,
+  WorkflowMetricsSnapshot,
+} from './metrics/workflow-metrics.js';
 export { WorkflowError } from './errors/workflow-error.js';
 export { StepTimeoutError } from './errors/step-timeout-error.js';
 export { RetryLimitExceededError } from './errors/retry-limit-exceeded-error.js';
